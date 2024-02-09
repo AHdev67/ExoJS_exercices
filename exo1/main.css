@@ -1,0 +1,16 @@
+#container{
+    display: flex;
+    justify-content: center;
+    padding-top: 200px;
+}
+
+.square{
+    color: white;
+    background-color: rgb(143, 197, 143);
+    height: 200px;
+    width: 200px;
+    text-align: center;
+    line-height: 200px;
+    font-size: 2em;
+    cursor: pointer;
+}
