@@ -1,98 +1,62 @@
-const playerX = "X";
-const playerO = "O";
-//combinaisons gagnantes pour la fonction verifVictoire
-const winningCombo = [
-	[0, 1, 2],
-	[3, 4, 5],
-	[6, 7, 8],
-	[0, 3, 6],
-	[1, 4, 7],
-	[2, 5, 8],
-	[0, 4, 8],
-	[2, 4, 6]
-];
+// Si tourJoueur = true, tour joueur X, sinon tour joueur O
+let tourJoueur = "true";
 
-const cellElements = document.querySelectorAll("data-cell");
-const containerElement = document.querySelector("#container");
-const currentGameState = document.querySelector("#gameState");
+const cells = document.querySelectorAll(".cell");
+const board = document.querySelector("#container");
+const currentTurn = document.querySelector("#gameState");
+const longTableau = cells.length
+var count = 1
 
-//premier tout attribué à joueur X
-let isPlayer_O_Turn = false;
+// remplissage des cases
 
-startGame();
 
-function startGame(){
-    isPlayer_O_Turn = false;
-    cellElements.forEach((cell) =>{
-        cell.classList.remove(playerX);
-        cell.classList.remove(playerO);
-        cell.innerHTML = "";
+    cells.forEach((cell) => cell.addEventListener("click", function(){
+        console.log(count)
+        if (tourJoueur){
+            cell.classList.toggle("joueur1")
+            cell.innerText = "X";
+            if( count >= cells.length){
+                currentTurn.value = "Partie Terminée";
+            }
+            else{
+                changerTour();
+                afficherTour();
+            }
+        }
+        else{
+            cell.classList.toggle("joueur2")
+            cell.innerText = "O";
+             
+            if( count >= cells.length){
+                currentTurn.value = "Partie Terminée";
+            }
+            else{
+                changerTour();
+                afficherTour();
+            }
+        }
+        count++
         
-        cell.addEventListener("click", manageCell, { once: true });
-    });
-    setBoardHoverClass();
-}
-
-
-function manageCell(e){
-    const cell = e.target;
-  
-    const currentClass = isPlayer_O_Turn ? playerO : playerX;
-    placeMark(cell, currentClass);
-  
-    if (checkWin(currentClass)){
-        endGame(false);
+    }, {once : true}))
     
-    } else if (isDraw()){
-        endGame(true);
-    } else {
-        switchTurn();
-        setBoardHoverClass();
+// changement de tour
+function changerTour(){
+    if (tourJoueur){
+        tourJoueur = false;
+    }
+    else{
+        tourJoueur = true;
     }
 }
 
-function endGame(egalite){
-    if (egalite){
-        alert("Egalité ...");
-    } else{
-        alert(`Joueur ${isPlayer_O_Turn ? "2" : "1"} a gagné !`);
+// affichage du tour à jouer
+function afficherTour(){
+    if (tourJoueur){
+        currentTurn.value = "";
+        currentTurn.value = "C'est au tour de X";
     }
-}
-  
-function isDraw(){
-    return [...cellElements].every((cell) =>{
-        return(
-            cell.classList.contains(playerX) ||
-            cell.classList.contains(playerO)
-        );
-    });
-}
-  
-function placement(cell, currentClass){
-    cell.classList.add(currentClass);
-    cell.innerHTML = `<span style="font-size: 50px;">${
-        isPlayer_O_Turn ? "O" : "X"
-    }</span>`;
-}
-  
-function setBoardHoverClass(){
-    containerElement.classList.remove(playerX);
-    containerElement.classList.remove(playerO);
-    if (isPlayer_O_Turn){
-        containerElement.classList.add(playerO);
-    } else{
-        containerElement.classList.add(playerX);
+    else{
+        currentTurn.value = "";
+        currentTurn.value = "C'est au tour de O";
     }
-}
-  
-function checkWin(currentClass){
-    return winningCombo.some((combination) =>{
-        return combination.every((index) =>{
-        return cellElements[index].classList.contains(currentClass);
-      });
-    });
-}
-  
-function switchTurn(){
-    isPlayer_O_Turn = !isPlayer_O_Turn;
 }
